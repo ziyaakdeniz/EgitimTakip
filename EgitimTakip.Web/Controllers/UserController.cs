@@ -78,7 +78,7 @@ namespace EgitimTakip.Web.Controllers
         
         public IActionResult GetAll()
         {
-            var result=_context.Users.Where(x => x.IsDeleted==false).ToList();,
+            var result=_context.Users.Where(x => x.IsDeleted==false).ToList();
             return Json(new {data=result});
         }
 
