@@ -25,17 +25,19 @@
 <div class="modal fade" id="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title" id="modalTitle"></h5><button type="button"class="btn-close"data-bs-dismiss="modal"aria-label="Close"></button>
-           </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="modal-body">
 
                 <div class="mb-3" row>
                     <label class="form-label">Kategori Adı</label>
-                    <input type="text" id="txtCategoryName" placeholder="Lütfen kategori Adı Giriniz" class="form-control" required/>
+                    <input type="text" id="txtCategoryName" placeholder="Lütfen kategori Adı Giriniz" class="form-control" required />
                 </div>
 
             </div>
-            <div class="modal-footer"><button type="button"class="btn btn-secondary"data-bs-dismiss="modal">Kapat</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
                 <button type="button" id="btnSave" class="btn btn-primary"></button>
             </div>
         </div>
@@ -57,8 +59,8 @@
                 $("#btnSave").off().click(() => {
                     $.ajax({
                         url: '/TrainingCategory/Add',
-                            type: 'POST',
-                                data: {
+                        type: 'POST',
+                        data: {
                             trainingCategory: {
                                 name: $("#txtCategoryName").val()
                             }
@@ -80,15 +82,32 @@
                     {
                         data: 'id', title: 'İşlemler', render: (data) => {
 
-                            return `<a class="me-4" title="Sil" href"#"><i class='bx bxs-trash-alt bx-spin bx-sm bx-burst-hover' style='color:#c93d3d' ></i></a>
-                                               <a title="Düzenle" href"#"><i class='bx bx-pencil bx-sm bx-burst-hover' style='color:#1b57e4' ></i></a>
+                            return `<a onclick="deleteCategory(${data},this)"class="me-4" title="Sil" href"#"><i class='bx bxs-trash-alt bx-spin bx-sm bx-burst-hover' style='color:#c93d3d' ></i></a>
+                              <a title="Düzenle" href"#"><i class='bx bx-pencil bx-sm bx-burst-hover' style='color:#1b57e4' ></i></a>
 
-                                    `
+                                            `
                         }
                     }
                 ]
             });
         });
+
+        function deleteCategory(categoryId, button) {
+            if (confirm("Silmek istediğinizden emin misiniz?")) {
+                $.ajax({
+                    url: "/TrainingCategory/Delete",
+                    type: "POST",
+                    data: {
+                        id: categoryId
+                    },
+                    success: () => {
+                        let satir = $(button).parent().parent();
+                        DataTable.row(satir).remove().draw();
+                    }
+                });
+
+            }
+        }
 
 
 
