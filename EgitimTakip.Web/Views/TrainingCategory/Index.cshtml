@@ -20,23 +20,72 @@
     </div>
 </div>
 
+<!-- #region Modal -->
+
+<div class="modal fade" id="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title" id="modalTitle"></h5><button type="button"class="btn-close"data-bs-dismiss="modal"aria-label="Close"></button>
+           </div>
+            <div class="modal-body">
+
+                <div class="mb-3" row>
+                    <label class="form-label">Kategori Adı</label>
+                    <input type="text" id="txtCategoryName" placeholder="Lütfen kategori Adı Giriniz" class="form-control" required/>
+                </div>
+
+            </div>
+            <div class="modal-footer"><button type="button"class="btn btn-secondary"data-bs-dismiss="modal">Kapat</button>
+                <button type="button" id="btnSave" class="btn btn-primary"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #endregion -->
 @section Scripts {
     <script>
         var DataTable = "";
 
-        $(document).ready(() =>{
+        $(document).ready(() => {
+
+            $("#btnAdd").click(() => {
+                $("#modal").modal("show");
+                $("#btnSave").text("Kaydet");
+                $("#modalTitle").text("Yeni Kategori Ekle");
+                $("#txtCategoryName").val("");
+                $("#btnSave").off().click(() => {
+                    $.ajax({
+                        url: '/TrainingCategory/Add',
+                            type: 'POST',
+                                data: {
+                            trainingCategory: {
+                                name: $("#txtCategoryName").val()
+                            }
+
+                        },
+                        success: (res) => {
+                            $("#modal").modal("hide");
+                            DataTable.row.add(res).draw();
+                        }
+                    });
+                });
+            });
+
             DataTable = $("#tblTrainingCategories").DataTable({
                 ajax: '/TrainingCategory/GetAll',
                 columns: [
                     { data: 'id', title: 'ID' },
                     { data: 'name', title: 'Kategori Adı' },
-                    { data: 'id', title: 'İşlemler', render: (data) => {
+                    {
+                        data: 'id', title: 'İşlemler', render: (data) => {
 
                             return `<a class="me-4" title="Sil" href"#"><i class='bx bxs-trash-alt bx-spin bx-sm bx-burst-hover' style='color:#c93d3d' ></i></a>
-                                       <a title="Düzenle" href"#"><i class='bx bx-pencil bx-sm bx-burst-hover' style='color:#1b57e4' ></i></a>
-                            
-                            `
-                    } }
+                                               <a title="Düzenle" href"#"><i class='bx bx-pencil bx-sm bx-burst-hover' style='color:#1b57e4' ></i></a>
+
+                                    `
+                        }
+                    }
                 ]
             });
         });
