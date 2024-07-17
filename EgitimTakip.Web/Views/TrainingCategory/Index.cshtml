@@ -49,6 +49,15 @@
     <script>
         var DataTable = "";
 
+
+
+        $("#modal").on("shown.bs.modal", () => {
+            $("#txtCategoryName").focus().off("keypress").keypress((event) => {
+                if (event.key == "Enter")
+                    $("#btnSave").trigger("click");
+            });
+        });
+
         $(document).ready(() => {
 
             $("#btnAdd").click(() => {
@@ -68,7 +77,7 @@
                         },
                         success: (res) => {
                             $("#modal").modal("hide");
-                            DataTable.row.add(res).draw();
+                            DataTable.row.add(res).draw(false);
                         }
                     });
                 });
@@ -83,9 +92,9 @@
                         data: 'id', title: 'İşlemler', render: (data) => {
 
                             return `<a onclick="deleteCategory(${data},this)"class="me-4" title="Sil" href"#"><i class='bx bxs-trash-alt bx-spin bx-sm bx-burst-hover' style='color:#c93d3d' ></i></a>
-                              <a title="Düzenle" href"#"><i class='bx bx-pencil bx-sm bx-burst-hover' style='color:#1b57e4' ></i></a>
+                                      <a onclick="updateCategory(${data},this)" title="Düzenle" href"#"><i class='bx bx-pencil bx-sm bx-burst-hover' style='color:#1b57e4' ></i></a>
 
-                                            `
+                                                    `
                         }
                     }
                 ]
@@ -102,11 +111,43 @@
                     },
                     success: () => {
                         let satir = $(button).parent().parent();
-                        DataTable.row(satir).remove().draw();
+                        DataTable.row(satir).remove().draw(false);
                     }
                 });
 
             }
+        }
+
+        function updateCategory(categoryId, button) {
+            $.ajax({
+                url: '/TrainingCategory/GetById',
+                type: 'POST',
+                data: {
+                         id: categoryId
+                },
+                success: (res) => {
+                    $("#modal").modal("show");
+                    $("#txtCategoryName").val(res.name);
+                    $("#modalTitle").text("Kategori Düzenle");
+                    $("#btnSave").text("Güncelle").off().click(() => {
+                        res.name = $("#txtCategoryName").val();
+                        $.ajax({
+                            url: '/TrainingCategory/Update',
+                            type: 'POST',
+                            data: {
+                                trainingCategory: res
+
+                            },
+                            success: () => {
+                                let satir = $(button).parent().parent();
+                                DataTable.row(satir).data(res).draw(false);
+                                $("#modal").modal("hide");
+                            }
+                        });
+                    });
+
+                }
+            });
         }
 
 
