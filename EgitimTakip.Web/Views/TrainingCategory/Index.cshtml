@@ -1,0 +1,44 @@
+﻿<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-header bg-gradient-success text-dark fs-5">
+                <i class='bx bxs-graduation bx-spin  bx-border-circle'></i> Eğitim Kategorileri
+            </div>
+            <div class="card-body">
+
+                <table class="table table-hovered table-striped table-bordered" id="tblTrainingCategories">
+                </table>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var DataTable = "";
+
+        $(document).ready(() =>{
+            DataTable = $("#tblTrainingCategories").DataTable({
+                ajax: '/TrainingCategory/GetAll',
+                columns: [
+                    { data: 'id', title: 'ID' },
+                    { data: 'name', title: 'Kategori Adı' },
+                    { data: 'id', title: 'İşlemler', render: (data) => {
+
+                            return `<a title="Sil" href"#"><i class='bx bxs-trash-alt bx-spin bx-sm bx-burst-hover' style='color:#c93d3d' ></i></a>
+                                       <a title="Düzenle" href"#"><i class='bx bx-pencil bx-sm bx-burst-hover' style='color:#1b57e4' ></i></a>
+                            
+                            `
+                    } }
+                ]
+            });
+        });
+
+
+
+    </script>
+}
