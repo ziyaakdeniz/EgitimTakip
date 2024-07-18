@@ -81,6 +81,11 @@ namespace EgitimTakip.Web.Controllers
             var result=_context.Users.Where(x => x.IsDeleted==false).ToList();
             return Json(new {data=result});
         }
+        [HttpPost]
+        public IActionResult GetById(int id)
+        {
+            return Ok(_context.Users.Find(id));
+        }
 
     }
 }
