@@ -1,67 +1,68 @@
 ﻿using EgitimTakip.Data;
 using EgitimTakip.Models;
+using EgitimTakip.Repository.Abstract;
+using EgitimTakip.Repository.Shared.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EgitimTakip.Web.Controllers
 {
     public class TrainingController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITrainingRepository _repo;
 
-        public TrainingController(ApplicationDbContext context)
+        public TrainingController(ITrainingRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         public IActionResult Index()
         {
             return View();
         }
+        [HttpPost]
         public IActionResult GetAll(int companyId)
         {
-            var result=_context.Trainings.Where(x=>x.IsDeleted==false&& x.CompanyId==companyId).ToList();
-            return Json(new {data=result}); 
+           return Json(new { data=_repo.GetAll(companyId) });
         }
         [HttpPost]
         public IActionResult Add(Training training,List<TrainingsSubjectsMap> trainingsSubjectsMaps) 
         {
-            _context.Trainings.Add(training);
-            _context.SaveChanges();
-            foreach (var item in trainingsSubjectsMaps)
-            {
-                _context.TrainingsSubjectsMaps.Add(item);
-            }
-        
-            return Ok(training);
+            //_context.Trainings.Add(training);
+            //_context.SaveChanges();
+            //foreach (var item in trainingsSubjectsMaps)
+            //{
+            //    item.TrainingId=training.Id;
+            //    _context.TrainingsSubjectsMaps.Add(item);
+            //}
+
+            //return Ok(training);
+
+            
+
+            return Ok(_repo.Add(training, trainingsSubjectsMaps));
+
         }
         [HttpPost]
-        public IActionResult Update(Training training)
+        public IActionResult Update(Training training, List<TrainingsSubjectsMap> trainingsSubjectsMaps)
         {
-            _context.Trainings.Update(training);
-            _context.SaveChanges();
+            training.TrainingsSubjectsMap=new List<TrainingsSubjectsMap>();
+            _repo.Update(training);
+
+            training.TrainingsSubjectsMap = trainingsSubjectsMaps;
+            _repo.Update(training);
             return Ok(training);
         }
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            Training training = _context.Trainings.Find(id);
-            training.IsDeleted= true;
-            _context.Trainings.Update(training);
-            _context.SaveChanges();
-            return Ok(training);
+            return Ok(_repo.Delete(id) is object);
         }
-        [HttpPost]
-        public IActionResult HardDelete(int id)
-        {
-            Training training = _context.Trainings.Find(id);
-            _context.Trainings.Remove(training);
-            _context.SaveChanges();
-            return Ok();
-        }
+      
         [HttpPost]
         public IActionResult GetById(int id)
         {
-            return Ok(_context.Trainings.Find(id));
+            return Ok(_repo.GetById(id));
         }
+
     }
 }

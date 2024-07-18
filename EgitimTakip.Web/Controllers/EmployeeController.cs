@@ -1,16 +1,18 @@
 ﻿using EgitimTakip.Data;
 using EgitimTakip.Models;
+using EgitimTakip.Repository.Abstract;
+using EgitimTakip.Repository.Shared.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EgitimTakip.Web.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEmployeeRepository _repo;
 
-        public EmployeeController(ApplicationDbContext context)
+        public EmployeeController(IEmployeeRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         public IActionResult Index()
@@ -21,44 +23,39 @@ namespace EgitimTakip.Web.Controllers
         public IActionResult GetAll(int companyId)
 
         {
-            var result=_context.Employees.Where(x=>x.CompanyId==companyId&&x.IsDeleted==false).ToList();
-            return Json(new {data=result});
+            //var result=_context.Employees.Where(x=>x.CompanyId==companyId&&x.IsDeleted==false).ToList();
+            //return Json(new {data=result});
+            return Json(new {data=_repo.GetAll(companyId)});
+
         }
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var result = _context.Employees.Find(id);
-            result.IsDeleted = true;
-            _context.Employees.Update(result);
-            _context.SaveChanges();
-            return Ok(result);
+           _repo.Delete(id);
+            return Ok();
         }
         [HttpPost]
         public  IActionResult Add(Employee employee)
         {
-            _context.Employees.Add(employee);
-            _context.SaveChanges() ; 
-            return Ok(employee);
+            return Ok(_repo.Add(employee));
         }
         [HttpPost]
         public IActionResult Update(Employee employee)
         {
-            _context.Employees.Update(employee);
-            _context.SaveChanges() ;
-            return Ok(employee);
+           return Ok(_repo.Update(employee));
         }
-        [HttpPost]
-        public IActionResult HardDelete(int id)
-        {
-            Employee employee = _context.Employees.Find(id) ;
-            _context.Employees.Remove(employee);
-            _context.SaveChanges() ;
-            return Ok();
-        }
+        //[HttpPost]
+        //public IActionResult HardDelete(int id)
+        //{
+        //    Employee employee = _context.Employees.Find(id) ;
+        //    _context.Employees.Remove(employee);
+        //    _context.SaveChanges() ;
+        //    return Ok();
+        //}
         [HttpPost]
         public IActionResult GetById(int id)
         {
-            return Ok(_context.Employees.Find(id));
+           return Ok(_repo.GetById(id));
         }
     }
 }

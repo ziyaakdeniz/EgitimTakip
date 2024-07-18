@@ -1,16 +1,17 @@
 ﻿using EgitimTakip.Data;
 using EgitimTakip.Models;
+using EgitimTakip.Repository.Shared.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EgitimTakip.Web.Controllers
 {
     public class UserTypeController : Controller
     {
-        public readonly ApplicationDbContext _context;
+      private readonly IRepository<AppUserType> _repo;
 
-        public UserTypeController(ApplicationDbContext context)
+        public UserTypeController(IRepository<AppUserType> repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         public IActionResult Index()
@@ -20,35 +21,31 @@ namespace EgitimTakip.Web.Controllers
 
         public IActionResult GetAll()
         {
-            var result = _context.UserTypes.Where(u => u.IsDeleted == false);
-            return Json(new { data=result });
+           
+            return Json(new { data=_repo.GetAll() });
         }
         [HttpPost]
         public IActionResult Add(AppUserType userType)
         {
-            _context.UserTypes.Add(userType);
-            _context.SaveChanges();
-            return Ok(userType);
+           
+            return Ok(_repo.Add(userType));
         }
         [HttpPost]
         public IActionResult Update(AppUserType userType)
         {
-            _context.UserTypes.Update(userType);
-            _context.SaveChanges();
-            return Ok(userType);
+            
+            return Ok(_repo.Update(userType));
         }
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var userType = _context.UserTypes.Find(id);
-            userType.IsDeleted = true;
-            _context.SaveChanges();
-            return Ok(userType);
+           
+            return Ok(_repo.Delete(id)is object);
         }
         [HttpPost]
         public IActionResult GetById(int id)
         {
-            return Ok(_context.UserTypes.Find(id));
+            return Ok(_repo.GetById(id));
 
         }
     }

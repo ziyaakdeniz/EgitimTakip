@@ -1,16 +1,17 @@
 ﻿using EgitimTakip.Data;
 using EgitimTakip.Models;
+using EgitimTakip.Repository.Shared.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EgitimTakip.Web.Controllers
 {
     public class TrainingSubjectController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRepository<TrainingSubject> _repo;
 
-        public TrainingSubjectController(ApplicationDbContext context)
+        public TrainingSubjectController(IRepository<TrainingSubject> repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         public IActionResult Index()
@@ -19,35 +20,30 @@ namespace EgitimTakip.Web.Controllers
         }
         public IActionResult GetAll()
         {
-            var result = _context.GetTrainingSubjects.Where(x=>x.IsDeleted==false).ToList();
-            return Json(new {data= result});    
+            return Json(new {data= _repo.GetAll()});    
         }
         [HttpPost]
         public IActionResult Add(TrainingSubject trainingSubject)
         {
-            _context.GetTrainingSubjects.Add(trainingSubject);
-            _context.SaveChanges();
-            return Ok(trainingSubject);
+            
+            return Ok(_repo.Add(trainingSubject ));
         }
         [HttpPost]
         public IActionResult Update(TrainingSubject trainingSubject)
         {
-            _context.UpdateRange(trainingSubject);
-            _context.SaveChanges();
-            return Ok(trainingSubject);
+            
+            return Ok(_repo.Update(trainingSubject));
         }
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var result=_context.GetTrainingSubjects.Find(id);
-            result.IsDeleted= true; 
-            _context.GetTrainingSubjects.Update(result);
-            return Ok(result);
+            
+            return Ok(_repo.Delete(id)is object);
         }
         [HttpPost]
         public IActionResult GetById(int id)
         {
-            return Ok(_context.GetTrainingSubjects.Find(id));
+            return Ok(_repo.GetById(id));
         }
         
     }

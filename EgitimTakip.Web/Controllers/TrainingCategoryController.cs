@@ -1,16 +1,17 @@
 ﻿using EgitimTakip.Data;
 using EgitimTakip.Models;
+using EgitimTakip.Repository.Shared.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EgitimTakip.Web.Controllers
 {
     public class TrainingCategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRepository<TrainingCategory> _repo;
 
-        public TrainingCategoryController(ApplicationDbContext context)
+        public TrainingCategoryController(IRepository<TrainingCategory> repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         public IActionResult Index()
@@ -19,36 +20,28 @@ namespace EgitimTakip.Web.Controllers
         }
         public IActionResult GetAll()
         {
-            var result=_context.TrainingCategories.Where(x=>x.IsDeleted==false).ToList();
-            return Json(new {data=result}); 
+            return Ok(new {data=_repo.GetAll()});
         }
         [HttpPost]
         public IActionResult Add(TrainingCategory  trainingCategory)
         {
-            _context.TrainingCategories.Add(trainingCategory);
-            _context.SaveChanges();
-            return Ok(trainingCategory);
+           return Ok(_repo.Add(trainingCategory));
         }
         [HttpPost]
         public IActionResult Update(TrainingCategory trainingCategory)
         {
-            _context.TrainingCategories.Update(trainingCategory);
-            _context.SaveChanges();
-            return Ok(trainingCategory);
+            return Ok(_repo.Update(trainingCategory));
         }
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var result = _context.TrainingCategories.Find(id);
-            result.IsDeleted = true;
-            _context.TrainingCategories.Update(result);
-            _context.SaveChanges();
-            return Ok(result);
+           _repo.Delete(id);
+            return Ok();
         }
         [HttpPost]
         public IActionResult GetById(int id)
         {
-            return Ok(_context.TrainingCategories.Find(id));
+            return Ok(_repo.GetById(id));
         }
 
     }
