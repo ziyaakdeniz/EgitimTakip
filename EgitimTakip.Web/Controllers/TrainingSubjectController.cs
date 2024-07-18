@@ -38,7 +38,7 @@ namespace EgitimTakip.Web.Controllers
         public IActionResult Delete(int id)
         {
             
-            return Ok(_repo.Delete(id)is object);
+            return Ok(_repo.Delete(id) is object);
         }
         [HttpPost]
         public IActionResult GetById(int id)

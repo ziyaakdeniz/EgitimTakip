@@ -22,7 +22,7 @@ namespace EgitimTakip.Repository.Conctere
 
         public ICollection<Company> GetAll(int userId)
         {
-          return  _context.Companies.Include(c=>c.Users).Where(c=c=>c.UserId == userId).ToList();
+          return base.GetAll().Where(x=>x.Users.Any(u=>u.Id==userId)).ToList();
         }
     }
 }

@@ -70,7 +70,7 @@ namespace EgitimTakip.Web.Controllers
         public IActionResult Delete(int id)
         {
            
-            return Ok(_repo.Delete(id)is object);
+            return Ok(_repo.Delete(id) is object);
         }
         
         public IActionResult GetAll()

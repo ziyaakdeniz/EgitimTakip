@@ -12,6 +12,8 @@ namespace EgitimTakip.Models
     {
         public DateTime Date { get; set; }
 
+        public string? FilePath { get; set; }   
+
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
 
