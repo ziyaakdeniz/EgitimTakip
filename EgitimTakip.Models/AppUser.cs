@@ -14,7 +14,11 @@ namespace EgitimTakip.Models
 
         public string Password { get; set; }
 
-        public bool IsAdmin { get; set; }=false;    
+        public bool IsAdmin { get; set; }=false;
+
+        [ForeignKey(nameof(UserType))]
+        public int UserTypeId { get; set; }
+        public virtual AppUserType UserType { get; set; }
 
         public virtual ICollection<Company> Companies { get; set; }=new List<Company>();
     }

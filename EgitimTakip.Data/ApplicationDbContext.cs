@@ -26,6 +26,7 @@ namespace EgitimTakip.Data
         public virtual DbSet<TrainingSubject>GetTrainingSubjects { get; set; }
         public virtual DbSet<TrainingsSubjectsMap> TrainingsSubjectsMaps { get; set; }
         public virtual DbSet<TrainingCategory> TrainingCategories { get; set; }
+        public virtual DbSet<AppUserType>UserTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
