@@ -13,16 +13,16 @@ namespace EgitimTakip.Repository.Conctere
 {
     public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
-        private readonly ApplicationDbContext _context;
+        
 
         public CompanyRepository(ApplicationDbContext context) : base(context)
         {
-            _context=context;
+           
         }
 
         public ICollection<Company> GetAll(int userId)
         {
-          return base.GetAll().Where(x=>x.Users.Any(u=>u.Id==userId)).ToList();
+            return base.GetAll(c=>c.Users.Any(u=>u.Id==userId)).Include(c=>c.Users).ToList();
         }
     }
 }

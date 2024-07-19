@@ -14,7 +14,7 @@ namespace EgitimTakip.Repository.Abstract
 
         Training Add(Training training, List<TrainingsSubjectsMap> trainingsSubjectsMaps);
 
-        void AddEmployees(int trainingId, List<Employee> employees);
+        void UpdateAttendees(int trainingId, List<Employee> employees);
 
         void RemoveEmployee(int trainingId,Employee employee);
 

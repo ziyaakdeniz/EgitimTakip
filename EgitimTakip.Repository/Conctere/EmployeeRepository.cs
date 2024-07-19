@@ -23,7 +23,7 @@ namespace EgitimTakip.Repository.Conctere
         {
             //return _context.Employees.Where(e=>!e.IsDeleted&&e.CompanyId==companyId).ToList(); 
 
-            return base.GetAll().Where(emp=>emp.CompanyId == companyId).ToList();
+            return base.GetAll(emp=>emp.CompanyId==companyId).ToList();
         }
     }
 }
